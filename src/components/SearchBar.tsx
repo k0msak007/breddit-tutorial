@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Command,
   CommandEmpty,
@@ -12,15 +12,26 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Prisma, Subreddit } from "@prisma/client";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { User } from "lucide-react";
 import debounce from "lodash.debounce";
+import { useOnClickOutside } from "@/hooks/use-on-click-outside";
 
 interface SearchBarProps {}
 
 const SearchBar = (props: SearchBarProps) => {
   const [input, setInput] = useState<string>("");
   const router = useRouter();
+  const commandRef = useRef<HTMLDivElement>(null)
+  const pathname = usePathname()
+
+  useOnClickOutside(commandRef, () => {
+    setInput("")
+  })
+
+  useEffect(() => {
+    setInput("")
+  }, [pathname])
 
   const {
     data: queryResults,
